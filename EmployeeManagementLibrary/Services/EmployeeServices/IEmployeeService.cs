@@ -5,12 +5,11 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 {
     public interface IEmployeeService
     {
-        Task<BaseResponse<Guid>> AddEmployee(AddEmployeeDto request);
-        //Task<BaseResponse<List<EmployeeDto>>> GetAllEmployee();
-        Task<BaseResponse<EmployeeDto>> GetEmployee(Guid id);
-        Task<BaseResponse<Guid>> UpdateEmployee(Guid id, UpdateEmployeeDto request, Guid companyId);
-        Task<BaseResponse<bool>> Delete(Guid id, Guid companyId);
-        Task<BaseResponse<List<EmployeeDto>>> GetAllEmployeesByCompanyId(Guid companyId);
-        Task<BaseResponse<Guid>> GetCompanyIdByEmployeeId(Guid employeeId);
+        Task<BaseResponse<Guid>> AddEmployeeAsync(AddEmployeeDto request);
+        Task<BaseResponse<EmployeeDto>> GetEmployeeAsync(Guid id);
+        Task<BaseResponse<Guid>> UpdateEmployeeAsync(Guid id, UpdateEmployeeDto request, Guid companyId);
+        Task<BaseResponse<bool>> DeleteEmployeeAsync(Guid id, Guid companyId);
+        Task<BaseResponse<List<EmployeeDto>>> GetAllEmployeesByCompanyIdAsync(Guid companyId);
+        Task<BaseResponse<Guid>> GetCompanyIdByEmployeeIdAsync(Guid employeeId);
     }
 }

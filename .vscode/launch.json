@@ -1,40 +1,19 @@
 {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
   "configurations": [
-  {
-    "name": "C#: EmployeeManagementAPI Debug",
-    "type": "dotnet",
-    "request": "launch",
-    "projectPath": "${workspaceFolder}/EmployeeManagementAPI/EmployeeManagementAPI.csproj"
-  },
-
-  {
-      "name": "C#: EmployeeManagementAPI Debug",
+    {
+      "name": "C#: EmployeeManagementAPI",
       "type": "coreclr",
       "request": "launch",
-      "program": "${workspaceFolder}/EmployeeManagementAPI/bin/Debug/net8.0/EmployeeManagementAPI.dll"
-      },
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/EmployeeManagementAPI/bin/Debug/net8.0/EmployeeManagementAPI.dll",
+      "cwd": "${workspaceFolder}/EmployeeManagementAPI",
+      "console": "internalConsole",
+      "stopAtEntry": false
+    }
   ]
-
-
-
-
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  //"version": "0.2.0",
-  //"configurations": [
-  //  {
-  //    "name": "C#: EmployeeManagementAPI Debug",
-  //    "type": "dotnet",
-  //    "request": "launch",
-  //    "projectPath": "${workspaceFolder}/EmployeeManagementAPI/EmployeeManagementAPI.csproj"
-  //  },
-  //  {
-  //    "name": "C#: EmployeeManagementAPI Debug",
-  //  "type": "coreclr",
-  //  "request": "launch",
-  //  "program": "${workspaceFolder}/EmployeeManagementAPI/bin/Debug/net8.0/EmployeeManagementAPI.dll"
-  //  },
-       
-  //]
 }
+

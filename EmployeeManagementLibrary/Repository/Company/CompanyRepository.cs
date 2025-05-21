@@ -15,16 +15,16 @@ namespace EmployeeManagementLibrary.Repository.Company
 
 		public async Task<CompanyRegistration?> GetCompanyByNameAsync (string CompanyName)
 		{
-			return await _dbContext.Company.Where(x => x.CompanyName.ToLower() == CompanyName.ToLower()).FirstOrDefaultAsync();
+			return await _dbContext.Companies.Where(x => x.CompanyName.ToLower() == CompanyName.ToLower()).FirstOrDefaultAsync();
 		}
 
 		public async Task<List<CompanyRegistration>> GetAllCompanyAsync()
 		{
-			return await _dbContext.Company.ToListAsync();
+			return await _dbContext.Companies.ToListAsync();
 		}
 		public async Task<CompanyRegistration> GetCompanyAsync(Guid id)
 		{
-			return await _dbContext.Company.Where(x => x.Id == id).FirstOrDefaultAsync();
+			return await _dbContext.Companies.Where(x => x.Id == id).FirstOrDefaultAsync();
 		}
 	}
 }

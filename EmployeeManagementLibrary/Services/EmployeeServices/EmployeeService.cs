@@ -18,7 +18,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 		}
 
 
-		public async Task<BaseResponse<Guid>> AddEmployee(AddEmployeeDto request)
+		public async Task<BaseResponse<Guid>> AddEmployeeAsync(AddEmployeeDto request)
 		{
 			try
 			{
@@ -47,7 +47,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 					MaritalStatus = request.MaritalStatus
 				};
 
-				await _dbContext.emlpoyees.AddAsync(newEmployee);
+				await _dbContext.Emlpoyees.AddAsync(newEmployee);
 				if (await _dbContext.SaveChangesAsync() > 0)
 				{
 					return new BaseResponse<Guid>
@@ -120,7 +120,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 		//	}
 		//}
 
-		public async Task<BaseResponse<EmployeeDto>> GetEmployee(Guid id)
+		public async Task<BaseResponse<EmployeeDto>> GetEmployeeAsync(Guid id)
 		{
 			try
 			{
@@ -129,7 +129,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 				{
 					var data = new EmployeeDto
 					{
-						Id = employee.Id,
+						employeeId = employee.Id,
 						CompanyId = employee.CompanyId,
 						FirstName = employee.FirstName,
 						LastName = employee.LastName,
@@ -166,7 +166,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 			}
 		}
 
-		public async Task<BaseResponse<Guid>> GetCompanyIdByEmployeeId(Guid employeeId)
+		public async Task<BaseResponse<Guid>> GetCompanyIdByEmployeeIdAsync(Guid employeeId)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
         }
 
 
-        public async Task<BaseResponse<List<EmployeeDto>>> GetAllEmployeesByCompanyId(Guid companyId)
+        public async Task<BaseResponse<List<EmployeeDto>>> GetAllEmployeesByCompanyIdAsync(Guid companyId)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
                 {
                     var employeeDtos = employees.Select(e => new EmployeeDto
                     {
-                        Id = e.Id,
+                        employeeId = e.Id,
                         CompanyId = e.CompanyId,
                         FirstName = e.FirstName,
                         LastName = e.LastName,
@@ -249,7 +249,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
             }
         }
 
-        public async Task<BaseResponse<Guid>> UpdateEmployee(Guid id, UpdateEmployeeDto request, Guid companyId)
+        public async Task<BaseResponse<Guid>> UpdateEmployeeAsync(Guid id, UpdateEmployeeDto request, Guid companyId)
 		{
 			try
 			{
@@ -265,7 +265,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 					employee.HomeAddress = request.HomeAddress;
 					employee.MaritalStatus = request.MaritalStatus;
 
-					_dbContext.emlpoyees.Update(employee);
+					_dbContext.Emlpoyees.Update(employee);
 
 					if (await _dbContext.SaveChangesAsync() > 0)
 					{
@@ -295,7 +295,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 			}
 		}
 
-		public async Task<BaseResponse<bool>> Delete(Guid id, Guid companyId)
+		public async Task<BaseResponse<bool>> DeleteEmployeeAsync(Guid id, Guid companyId)
 		{
 			try
 			{
@@ -303,7 +303,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 
 				if (employee != null)
 				{
-					_dbContext.emlpoyees.Remove(employee);
+					_dbContext.Emlpoyees.Remove(employee);
 
 					if (await _dbContext.SaveChangesAsync() > 0)
 					{

@@ -52,7 +52,7 @@ namespace EmployeeManagementLibrary.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Company",
+                name: "Companies",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -61,11 +61,30 @@ namespace EmployeeManagementLibrary.Migrations
                     CompanyEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     About = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Company", x => x.Id);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WorkHistories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    employeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Responsibility = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    EndDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    IsCurrentJob = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkHistories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,7 +194,7 @@ namespace EmployeeManagementLibrary.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "emlpoyees",
+                name: "Emlpoyees",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -188,47 +207,53 @@ namespace EmployeeManagementLibrary.Migrations
                     HomeAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaritalStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WorkHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_emlpoyees", x => x.Id);
+                    table.PrimaryKey("PK_Emlpoyees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_emlpoyees_Company_CompanyId",
+                        name: "FK_Emlpoyees_Companies_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Company",
+                        principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Emlpoyees_WorkHistories_WorkHistoryId",
+                        column: x => x.WorkHistoryId,
+                        principalTable: "WorkHistories",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "EduInformation",
+                name: "EducationRecords",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PrimarySchoolAttended = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SecondarySchoolAttended = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InstitutionAttended = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Qualification = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateGraduated = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    employeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SchoolName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SchoolType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CourseStudied = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsGraduated = table.Column<bool>(type: "bit", nullable: false),
+                    Certificates = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EduInformation", x => x.Id);
+                    table.PrimaryKey("PK_EducationRecords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EduInformation_emlpoyees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "emlpoyees",
+                        name: "FK_EducationRecords_Emlpoyees_employeeId",
+                        column: x => x.employeeId,
+                        principalTable: "Emlpoyees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "HealthStatus",
+                name: "MedicalStatuses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -237,24 +262,23 @@ namespace EmployeeManagementLibrary.Migrations
                     Allergies = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Precautions = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    employeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HealthStatus", x => x.Id);
+                    table.PrimaryKey("PK_MedicalStatuses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HealthStatus_emlpoyees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "emlpoyees",
+                        name: "FK_MedicalStatuses_Emlpoyees_employeeId",
+                        column: x => x.employeeId,
+                        principalTable: "Emlpoyees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NextKin",
+                name: "NextOfKin",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -263,17 +287,17 @@ namespace EmployeeManagementLibrary.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HomeAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    employeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NextKin", x => x.Id);
+                    table.PrimaryKey("PK_NextOfKin", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NextKin_emlpoyees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "emlpoyees",
+                        name: "FK_NextOfKin_Emlpoyees_employeeId",
+                        column: x => x.employeeId,
+                        principalTable: "Emlpoyees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -318,24 +342,29 @@ namespace EmployeeManagementLibrary.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EduInformation_EmployeeId",
-                table: "EduInformation",
-                column: "EmployeeId");
+                name: "IX_EducationRecords_employeeId",
+                table: "EducationRecords",
+                column: "employeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_emlpoyees_CompanyId",
-                table: "emlpoyees",
+                name: "IX_Emlpoyees_CompanyId",
+                table: "Emlpoyees",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HealthStatus_EmployeeId",
-                table: "HealthStatus",
-                column: "EmployeeId");
+                name: "IX_Emlpoyees_WorkHistoryId",
+                table: "Emlpoyees",
+                column: "WorkHistoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NextKin_EmployeeId",
-                table: "NextKin",
-                column: "EmployeeId");
+                name: "IX_MedicalStatuses_employeeId",
+                table: "MedicalStatuses",
+                column: "employeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NextOfKin_employeeId",
+                table: "NextOfKin",
+                column: "employeeId");
         }
 
         /// <inheritdoc />
@@ -357,13 +386,13 @@ namespace EmployeeManagementLibrary.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "EduInformation");
+                name: "EducationRecords");
 
             migrationBuilder.DropTable(
-                name: "HealthStatus");
+                name: "MedicalStatuses");
 
             migrationBuilder.DropTable(
-                name: "NextKin");
+                name: "NextOfKin");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -372,10 +401,13 @@ namespace EmployeeManagementLibrary.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "emlpoyees");
+                name: "Emlpoyees");
 
             migrationBuilder.DropTable(
-                name: "Company");
+                name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "WorkHistories");
         }
     }
 }

@@ -14,6 +14,7 @@ C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\EmployeeManagemen
 C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\EmployeeManagementLibrary.AssemblyInfoInputs.cache
 C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\EmployeeManagementLibrary.AssemblyInfo.cs
 C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\EmployeeManagementLibrary.csproj.CoreCompileInputs.cache
+C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\EmployeeManagementLibrary.sourcelink.json
 C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\Employee.385BD007.Up2Date
 C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\EmployeeManagementLibrary.dll
 C:\Project\Employee\EmployeeManagementLibrary\obj\Debug\net8.0\refint\EmployeeManagementLibrary.dll

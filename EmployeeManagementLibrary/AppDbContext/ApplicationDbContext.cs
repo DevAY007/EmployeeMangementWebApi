@@ -13,10 +13,10 @@ namespace EmployeeManagementLibrary.AppDbContext
 
         }
 
-        public DbSet<Employee> emlpoyees { get; set; }
-		public DbSet<NextOfKin> NextKin { get; set; }
-		public DbSet<EducationHistory> EduInformation { get; set; }
-		public DbSet<HealthStatus> HealthStatus{ get; set; }
-		public DbSet<CompanyRegistration> Company { get; set; }
+        public DbSet<Employee> Emlpoyees { get; set; }
+		public DbSet<WorkHistory> WorkHistories { get; set; }
+		public DbSet<MedicalStatus> MedicalStatuses{ get; set; }
+        public DbSet<EducationHistory> EducationRecords {get; set;}
+		public DbSet<CompanyRegistration> Companies { get; set; }
     }
 }

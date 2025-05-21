@@ -14,6 +14,7 @@ namespace EmployeeManagementLibrary.Dto.Employees
         [Required(ErrorMessage = "Gender Is Required")]
         public string Gender { get; set; }
         [Required(ErrorMessage = "Email Is Required")]
+		[EmailAddress]
 		public string Email { get; set; }
 		[Required(ErrorMessage = "Phone Number Is Required")]
 		public string PhoneNumber { get; set; }

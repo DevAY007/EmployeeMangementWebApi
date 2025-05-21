@@ -1,9 +1,8 @@
-using System;
-using System.Threading.Tasks;
-using AspNetCoreHero.ToastNotification.Abstractions;
 using EmployeeManagementLibrary.Services;
 using EmployeeManagementLibrary.Dto.User;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace EmployeeManagementAPI.Controllers
 {
@@ -12,10 +11,12 @@ namespace EmployeeManagementAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IConfiguration _configuration;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -30,65 +31,65 @@ namespace EmployeeManagementAPI.Controllers
 
             if (result.IsSuccessful)
             {
-                return StatusCode(200,result);
+                return StatusCode(200, result);
             }
             return BadRequest(result.Message);
         }
 
-        // GET: api/user/detail/{id}
-    [HttpGet("detail/{id}")]
-    public async Task<IActionResult> UserDetail(Guid id)
-    {
-        var result = await _userService.GetUserByIdAsync(id);
-
-        if (!result.IsSuccessful)
+        [Authorize]       
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> UserDetail(Guid id)
         {
-            return NotFound("User not found.");
+            var result = await _userService.GetUserByIdAsync(id);
+
+            if (!result.IsSuccessful)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(result.Data);
         }
 
-        return Ok(result.Data);
-    }
+        //public async Task<IActionResult> EditUser(Guid id)
+        //{
+        //    var result = await _userService.GetUserByIdAsync(id);
 
-    //// GET: api/user/edit-user/{id} (optional - might not be needed for an API)
-    //[HttpGet("edit-user/{id}")]
-    //public async Task<IActionResult> EditUser(Guid id)
-    //{
-    //    var result = await _userService.GetUserByIdAsync(id);
+        //    if (!result.IsSuccessful)
+        //    {
+        //        return NotFound("User not found.");
+        //    }
 
-    //    if (!result.IsSuccessful)
-    //    {
-    //        return NotFound("User not found.");
-    //    }
+        //    return Ok(result.Data);
+        //}
 
-    //    return Ok(result.Data);
-    //}
+        // PUT: api/user/edit-user/{id}
 
-    // PUT: api/user/edit-user/{id}
-    [HttpPut("edit-user/{id}")]
-    public async Task<IActionResult> EditUser(Guid id, [FromBody] UpdateUserDto request)
-    {
-        var result = await _userService.UpdateUserAsync(id, request);
-
-        if (!result.IsSuccessful)
+        [Authorize]
+        [HttpPut("edit-user/{id}")]
+        public async Task<IActionResult> EditUser(Guid id, [FromBody] UpdateUserDto request)
         {
-            return BadRequest(result.Message);
+            var result = await _userService.UpdateUserAsync(id, request);
+
+            if (!result.IsSuccessful)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return NoContent(); // 204 No Content (update successful, no response body needed)
         }
 
-        return NoContent(); // 204 No Content (update successful, no response body needed)
-    }
-
-    // DELETE: api/user/delete/{id}
-    [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteUser(Guid id)
-    {
-        var result = await _userService.DeleteUserAsync(id);
-
-        if (!result.IsSuccessful)
+        [Authorize]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            return BadRequest(result.Message);
-        }
+            var result = await _userService.DeleteUserAsync(id);
 
-        return NoContent(); // 204 No Content (successful deletion)
-    }
+            if (!result.IsSuccessful)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return NoContent(); // 204 No Content (successful deletion)
+        }
     }
 }

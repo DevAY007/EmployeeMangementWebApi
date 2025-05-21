@@ -189,7 +189,7 @@ namespace EmployeeManagementLibrary.Services
 
        
 
-        public async Task<BaseResponse<bool>> UserRegistration(AddUserDto request)
+        public async Task<BaseResponse<Guid>> UserRegistration(AddUserDto request)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace EmployeeManagementLibrary.Services
                         ? "Username already exists!"
                         : "Email already exists!";
 
-                    return new BaseResponse<bool> { IsSuccessful = false, Message = errorMessage };
+                    return new BaseResponse<Guid> { IsSuccessful = false, Message = errorMessage };
                 }
 
                 // Create a new user
@@ -219,7 +219,7 @@ namespace EmployeeManagementLibrary.Services
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (!result.Succeeded)
                 {
-                    return new BaseResponse<bool>
+                    return new BaseResponse<Guid>
                     {
                         IsSuccessful = false,
                         Message = "User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description))
@@ -237,18 +237,18 @@ namespace EmployeeManagementLibrary.Services
                 var roleResult = await _userManager.AddToRoleAsync(user, defaultRole);
                 if (!roleResult.Succeeded)
                 {
-                    return new BaseResponse<bool>
+                    return new BaseResponse<Guid>
                     {
                         IsSuccessful = false,
-                        Message = "Failed to assign user to role: " + string.Join(", ", roleResult.Errors.Select(e => e.Description))
+                        Message = "Failed to assign user to role: " + string.Join(", ", roleResult.Errors.Select(e => e.Description)),
                     };
                 }
 
-                return new BaseResponse<bool> { IsSuccessful = true, Message = "Registration successful.", Data = true };
+                return new BaseResponse<Guid> { IsSuccessful = true, Message = "Registration successful.", Data = Guid.Empty };
             }
             catch (Exception ex)
             {
-                return new BaseResponse<bool> { IsSuccessful = false, Message = "An error occurred: " + ex.Message };
+                return new BaseResponse<Guid> { IsSuccessful = false, Message = "An error occurred: " + ex.Message };
             }
         }
 

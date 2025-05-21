@@ -12,7 +12,7 @@ namespace EmployeeManagementLibrary.Services
         public Task<BaseResponse<bool>> UpdateUserAsync(Guid id, UpdateUserDto request);
         public Task<BaseResponse<bool>> DeleteUserAsync(Guid id);
         public Task<BaseResponse<bool>> UserLogin(UserLoginRequestDto request);
-        public Task<BaseResponse<bool>> UserRegistration(AddUserDto request);
+        public Task<BaseResponse<Guid>> UserRegistration(AddUserDto request);
         public Task<BaseResponse<bool>> SignOutAsync();
 
     }

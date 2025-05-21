@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeManagementLibrary.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250504140907_InitialCreate")]
+    [Migration("20250520104900_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -65,18 +65,23 @@ namespace EmployeeManagementLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid?>("WorkHistoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("emlpoyees");
+                    b.HasIndex("WorkHistoryId");
+
+                    b.ToTable("Emlpoyees");
                 });
 
             modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.CompanyRegistration", b =>
@@ -100,7 +105,7 @@ namespace EmployeeManagementLibrary.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
@@ -108,7 +113,7 @@ namespace EmployeeManagementLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.EducationHistory", b =>
@@ -117,43 +122,42 @@ namespace EmployeeManagementLibrary.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Certificates")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourseStudied")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DateGraduated")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsGraduated")
+                        .HasColumnType("bit");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("InstitutionAttended")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PrimarySchoolAttended")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Qualification")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecondarySchoolAttended")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedDate")
+                    b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SchoolName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SchoolType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("employeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("employeeId");
 
-                    b.ToTable("EduInformation");
+                    b.ToTable("EducationRecords");
                 });
 
-            modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.HealthStatus", b =>
+            modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.MedicalStatus", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -175,27 +179,24 @@ namespace EmployeeManagementLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Precautions")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("employeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("employeeId");
 
-                    b.ToTable("HealthStatus");
+                    b.ToTable("MedicalStatuses");
                 });
 
             modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.NextOfKin", b =>
@@ -206,9 +207,6 @@ namespace EmployeeManagementLibrary.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -226,18 +224,21 @@ namespace EmployeeManagementLibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("employeeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("employeeId");
 
-                    b.ToTable("NextKin");
+                    b.ToTable("NextOfKin");
                 });
 
             modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.User", b =>
@@ -307,6 +308,43 @@ namespace EmployeeManagementLibrary.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.WorkHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTimeOffset>("EndDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<bool>("IsCurrentJob")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Responsibility")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("StartDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("employeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkHistories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -450,6 +488,10 @@ namespace EmployeeManagementLibrary.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EmployeeManagementMVC.Models.Entities.WorkHistory", null)
+                        .WithMany("Employee")
+                        .HasForeignKey("WorkHistoryId");
+
                     b.Navigation("Company");
                 });
 
@@ -457,18 +499,18 @@ namespace EmployeeManagementLibrary.Migrations
                 {
                     b.HasOne("EmployeeManagementMVC.Models.Employee", "Employee")
                         .WithMany("EducationRecords")
-                        .HasForeignKey("EmployeeId")
+                        .HasForeignKey("employeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.HealthStatus", b =>
+            modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.MedicalStatus", b =>
                 {
                     b.HasOne("EmployeeManagementMVC.Models.Employee", "Employee")
                         .WithMany("healthStatus")
-                        .HasForeignKey("EmployeeId")
+                        .HasForeignKey("employeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -479,7 +521,7 @@ namespace EmployeeManagementLibrary.Migrations
                 {
                     b.HasOne("EmployeeManagementMVC.Models.Employee", "Employee")
                         .WithMany("NextOfKinRecords")
-                        .HasForeignKey("EmployeeId")
+                        .HasForeignKey("employeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -549,6 +591,11 @@ namespace EmployeeManagementLibrary.Migrations
             modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.CompanyRegistration", b =>
                 {
                     b.Navigation("employees");
+                });
+
+            modelBuilder.Entity("EmployeeManagementMVC.Models.Entities.WorkHistory", b =>
+                {
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

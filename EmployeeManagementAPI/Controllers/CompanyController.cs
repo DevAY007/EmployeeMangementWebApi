@@ -1,11 +1,14 @@
 using EmployeeManagementLibrary.Services.CompanyService;
 using EmployeeManagementLibrary.Dto.Company;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace EmployeeManagementAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
@@ -18,14 +21,14 @@ namespace EmployeeManagementAPI.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetAllCompanies()
         {
-            var result = await _companyService.GetAllCompany();
+            var result = await _companyService.GetAllCompanyAsync();
             return result.IsSuccessful ? Ok(result.Data) : StatusCode(500, result.Message);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompanyDetails(Guid id)
         {
-            var result = await _companyService.GetCompany(id);
+            var result = await _companyService.GetCompanyAsync(id);
             if (!result.IsSuccessful) return NotFound(result.Message);
             return Ok(result.Data);
         }
@@ -33,7 +36,7 @@ namespace EmployeeManagementAPI.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateCompany([FromBody] CreateCompanyDto request)
         {
-            var result = await _companyService.CreateCompany(request);
+            var result = await _companyService.CreateCompanyAsync(request);
 
             if (result.IsSuccessful)
             {
@@ -46,14 +49,14 @@ namespace EmployeeManagementAPI.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] UpdateCompanyDto request)
         {
-            var result = await _companyService.UpdateCompany(id, request);
+            var result = await _companyService.UpdateCompanyAsync(id, request);
             return result.IsSuccessful ? Ok(result.Data) : BadRequest(result.Message);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCompany(Guid id)
         {
-            var result = await _companyService.Delete(id);
+            var result = await _companyService.DeleteCompanyAsync(id);
             return result.IsSuccessful ? NoContent() : NotFound(result.Message);
         }
     }

@@ -7,7 +7,6 @@ namespace EmployeeManagementLibrary.Dto.Employees
 {
     public class EmployeeDto
     {
-         public Guid Id { get; set; }
         public Guid CompanyId { get; set; }
         public Guid employeeId { get; set; }
         public string FirstName { get; set; }

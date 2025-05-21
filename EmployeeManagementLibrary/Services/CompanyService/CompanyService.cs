@@ -17,7 +17,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			_applicationDbContext = applicationDbContext;
 		}
 
-		public async Task<BaseResponse<Guid>> CreateCompany(CreateCompanyDto request)
+		public async Task<BaseResponse<Guid>> CreateCompanyAsync(CreateCompanyDto request)
 		{
 			try
 			{
@@ -43,7 +43,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 				};
 
 				// Save to database
-				await _applicationDbContext.Company.AddAsync(newCompany);
+				await _applicationDbContext.Companies.AddAsync(newCompany);
 				var saved = await _applicationDbContext.SaveChangesAsync();
 
 				if (saved > 0)
@@ -73,7 +73,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 		}
 
 
-		public async Task<BaseResponse<List<CompanyRegistrationDto>>> GetAllCompany()
+		public async Task<BaseResponse<List<CompanyRegistrationDto>>> GetAllCompanyAsync()
 		{
 			try
 			{
@@ -98,7 +98,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 		}
 
-		public async Task<BaseResponse<CompanyRegistrationDto>> GetCompany(Guid id)
+		public async Task<BaseResponse<CompanyRegistrationDto>> GetCompanyAsync(Guid id)
 		{
 			try
 			{
@@ -123,7 +123,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 		}
 
-		public async Task<BaseResponse<bool>> UpdateCompany(Guid id, UpdateCompanyDto request)
+		public async Task<BaseResponse<bool>> UpdateCompanyAsync(Guid id, UpdateCompanyDto request)
 		{
 			try
 			{
@@ -134,7 +134,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 					company.CompanyEmail = request.CompanyEmail;
 					company.About = request.About;
 
-					_applicationDbContext.Company.Update(company);
+					_applicationDbContext.Companies.Update(company);
 
 					if (await _applicationDbContext.SaveChangesAsync() > 0)
 					{
@@ -150,7 +150,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 		}
 
-		public async Task<BaseResponse<bool>> Delete(Guid id)
+		public async Task<BaseResponse<bool>> DeleteCompanyAsync(Guid id)
 		{
 			try
 			{
@@ -158,7 +158,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 
 				if (company != null)
 				{
-					_applicationDbContext.Company.Remove(company);
+					_applicationDbContext.Companies.Remove(company);
 
 					if (await _applicationDbContext.SaveChangesAsync() > 0)
 					{
