@@ -3,6 +3,8 @@ using EmployeeManagementLibrary.Dto;
 using EmployeeManagementLibrary.Repository;
 using EmployeeManagementLibrary.Dto.Company;
 using EmployeeManagementMVC.Models.Entities;
+using Microsoft.Extensions.Logging;
+
 
 namespace EmployeeManagementLibrary.Services.CompanyService
 {
@@ -10,17 +12,20 @@ namespace EmployeeManagementLibrary.Services.CompanyService
     {
 		private readonly ICompanyRepo _companyRepository;
 		private readonly ApplicationDbContext _applicationDbContext;
+		private readonly ILogger<CompanyService> _logger;
 
-		public CompanyService(ICompanyRepo companyRepository, ApplicationDbContext applicationDbContext)
+		public CompanyService(ICompanyRepo companyRepository, ApplicationDbContext applicationDbContext, ILogger<CompanyService> logger)
 		{
 			_companyRepository = companyRepository;
 			_applicationDbContext = applicationDbContext;
+			_logger = logger;
 		}
 
 		public async Task<BaseResponse<Guid>> CreateCompanyAsync(CreateCompanyDto request)
 		{
 			try
 			{
+				_logger.LogInformation("Checking for Existing Record");
 				// Check if the company already exists
 				var existingCompany = await _companyRepository.GetCompanyByNameAsync(request.CompanyName);
 				if (existingCompany != null)
@@ -32,6 +37,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 					};
 				}
 
+				_logger.LogInformation("Check Complete, Existinng Record not found, Creating new Company");
 				// Create new company entity
 				var newCompany = new CompanyRegistration
 				{
@@ -48,6 +54,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 
 				if (saved > 0)
 				{
+					_logger.LogInformation("Company Created Successfully");
 					return new BaseResponse<Guid>
 					{
 						Data = newCompany.Id,
@@ -56,6 +63,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 					};
 				}
 
+				_logger.LogError("An Error occured while trying to create Company");
 				return new BaseResponse<Guid>
 				{
 					Message = "Company creation failed",
@@ -64,6 +72,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"An unexpected Error Occured {ex.Message}");
 				return new BaseResponse<Guid>
 				{
 					Message = $"Error: {ex.Message}",
@@ -81,6 +90,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 
 				if (company.Count > 0)
 				{
+					_logger.LogInformation("Retriving All Companies Records");
 					var data = company.Select(x => new CompanyRegistrationDto
 					{
 						CompanyId = x.Id,
@@ -88,13 +98,33 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 						CompanyEmail = x.CompanyEmail,
 						About = x.About
 					}).ToList();
-					return new BaseResponse<List<CompanyRegistrationDto>> { Message = "Record retrieved successfully", IsSuccessful = true, Data = data };
+
+					_logger.LogInformation("Retrieved all Companies Successfully");
+					return new BaseResponse<List<CompanyRegistrationDto>>
+					{
+						Message = "Record retrieved successfully",
+						IsSuccessful = true,
+						Data = data
+					};
 				}
-				return new BaseResponse<List<CompanyRegistrationDto>> { Message = "No record", IsSuccessful = false, Data = new List<CompanyRegistrationDto>() };
+
+				_logger.LogDebug("Records not Found");
+				return new BaseResponse<List<CompanyRegistrationDto>>
+				{
+					Message = "No record",
+					IsSuccessful = false,
+					Data = new List<CompanyRegistrationDto>()
+				};
 			}
 			catch (Exception ex)
 			{
-				return new BaseResponse<List<CompanyRegistrationDto>> { Message = $"Error : {ex.Message}", IsSuccessful = false, Data = new List<CompanyRegistrationDto>() };
+				_logger.LogError($"An Error Occured {ex.Message}");
+				return new BaseResponse<List<CompanyRegistrationDto>>
+				{
+					Message = $"Error : {ex.Message}",
+					IsSuccessful = false,
+					Data = new List<CompanyRegistrationDto>()
+				};
 			}
 		}
 
@@ -112,14 +142,33 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 						CompanyEmail = company.CompanyEmail,
 						About = company.About,
 					};
-					return new BaseResponse<CompanyRegistrationDto> { Message = "Company Record Retrived Successfully", IsSuccessful = true, Data = data };
+
+					_logger.LogInformation("Company Records retrieved Successfully");
+					return new BaseResponse<CompanyRegistrationDto> 
+					{ 
+						Message = "Company Record Retrived Successfully", 
+						IsSuccessful = true, 
+						Data = data 
+					};
 				}
-				return new BaseResponse<CompanyRegistrationDto> { Message = "No Record ", IsSuccessful = false, Data = new CompanyRegistrationDto() };
+				_logger.LogDebug("No Record Found");
+				return new BaseResponse<CompanyRegistrationDto> 
+				{ 
+					Message = "No Record ", 
+					IsSuccessful = false, 
+					Data = new CompanyRegistrationDto() 
+				};
 
 			}
 			catch (Exception ex)
 			{
-				return new BaseResponse<CompanyRegistrationDto> { Message = $"Error : {ex.Message}", IsSuccessful = false, Data = new CompanyRegistrationDto() };
+				_logger.LogDebug($"An error occured{ex.Message}");
+				return new BaseResponse<CompanyRegistrationDto> 
+				{ 
+					Message = $"Error : {ex.Message}", 
+					IsSuccessful = false, 
+					Data = new CompanyRegistrationDto() 
+				};
 			}
 		}
 
@@ -127,6 +176,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 		{
 			try
 			{
+				_logger.LogInformation("Update Company Method Called");
 				var company = await _companyRepository.GetCompanyAsync(id);
 				if (company != null)
 				{
@@ -138,15 +188,32 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 
 					if (await _applicationDbContext.SaveChangesAsync() > 0)
 					{
-						return new BaseResponse<bool> { Message = "Company Record updated successfully", IsSuccessful = true, Data = true };
+						_logger.LogInformation("Company Records Updated");
+						return new BaseResponse<bool> 
+						{ 
+							Message = "Company Record updated successfully", 
+							IsSuccessful = true, 
+							Data = true 
+						};
 					}
 				}
 
-				return new BaseResponse<bool> { Message = "Record not found", IsSuccessful = false, Data = false };
+				-logger.LogError("Company Record cannot be found");
+				return new BaseResponse<bool> 
+				{ 
+					Message = "Record not found", 
+					IsSuccessful = false, 
+					Data = false 
+				};
 			}
 			catch (Exception ex)
 			{
-				return new BaseResponse<bool> { Message = $"Error :  {ex.Message}", IsSuccessful = false, Data = false };
+				-logger.LogDebug($"An Error Occured {ex.Message}")
+				return new BaseResponse<bool> 
+				{ Message = $"Error :  {ex.Message}", 
+				IsSuccessful = false, 
+				Data = false 
+			};
 			}
 		}
 
@@ -154,6 +221,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 		{
 			try
 			{
+				_logger.LogInformation("Delete Method Called");
 				var company = await _companyRepository.GetCompanyAsync(id);
 
 				if (company != null)
@@ -162,14 +230,17 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 
 					if (await _applicationDbContext.SaveChangesAsync() > 0)
 					{
+						_logger.LogInformation("Company Deleted Successfully");
 						return new BaseResponse<bool> { Message = "Company Record Deleted Successfully", IsSuccessful = true, Data = true };
 					}
 				}
-				return new BaseResponse<bool> { Message = "Book not found", IsSuccessful = false, Data = false };
+				_logger.LogDebug("Company Record Not Found Failed to delete Company");
+				return new BaseResponse<bool> { Message = "Recprd not found", IsSuccessful = false, Data = false };
 				
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"An Error Occured {ex.Message}");
 				return new BaseResponse<bool> { Message = $"Error :  {ex.Message}", IsSuccessful = false, Data = false };
 			}
 		}
