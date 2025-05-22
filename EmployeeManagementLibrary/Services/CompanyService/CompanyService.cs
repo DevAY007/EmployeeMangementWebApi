@@ -72,7 +72,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"An unexpected Error Occured {ex.Message}");
+				_logger.LogError(ex,"An unexpected Error Occured {ex.Message}");
 				return new BaseResponse<Guid>
 				{
 					Message = $"Error: {ex.Message}",
@@ -118,7 +118,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"An Error Occured {ex.Message}");
+				_logger.LogError(ex,"An Error Occured {ex.Message}");
 				return new BaseResponse<List<CompanyRegistrationDto>>
 				{
 					Message = $"Error : {ex.Message}",
@@ -162,7 +162,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 			catch (Exception ex)
 			{
-				_logger.LogDebug($"An error occured{ex.Message}");
+				_logger.LogDebug(ex,"An error occured{ex.Message}");
 				return new BaseResponse<CompanyRegistrationDto> 
 				{ 
 					Message = $"Error : {ex.Message}", 
@@ -198,7 +198,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 					}
 				}
 
-				-logger.LogError("Company Record cannot be found");
+				_logger.LogError("Company Record cannot be found");
 				return new BaseResponse<bool> 
 				{ 
 					Message = "Record not found", 
@@ -208,7 +208,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 			catch (Exception ex)
 			{
-				-logger.LogDebug($"An Error Occured {ex.Message}")
+				_logger.LogDebug(ex,"An Error Occured {ex.Message}");
 				return new BaseResponse<bool> 
 				{ Message = $"Error :  {ex.Message}", 
 				IsSuccessful = false, 
@@ -240,7 +240,7 @@ namespace EmployeeManagementLibrary.Services.CompanyService
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"An Error Occured {ex.Message}");
+				_logger.LogError(ex,"An Error Occured {ex.Message}");
 				return new BaseResponse<bool> { Message = $"Error :  {ex.Message}", IsSuccessful = false, Data = false };
 			}
 		}

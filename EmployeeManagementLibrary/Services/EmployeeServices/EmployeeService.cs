@@ -3,6 +3,8 @@ using EmployeeManagementLibrary.Dto;
 using EmployeeManagementLibrary.Dto.Employees;
 using EmployeeManagementLibrary.Repository.EmployeeRepo;
 using EmployeeManagementMVC.Models;
+using Microsoft.Extensions.Logging;
+
 
 namespace EmployeeManagementLibrary.Services.EmployeeServices
 {
@@ -10,11 +12,13 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
     {
         private readonly IEmployeeRepository _employeeRepository;
 		private readonly ApplicationDbContext _dbContext;
+		private readonly ILogger<EmployeeService> _logger;
 
-		public EmployeeService(IEmployeeRepository employeeRepository, ApplicationDbContext dbContext)
+		public EmployeeService(IEmployeeRepository employeeRepository, ApplicationDbContext dbContext, ILogger<EmployeeService> logger)
 		{
 			_employeeRepository = employeeRepository;
 			_dbContext = dbContext;
+			_logger = logger;
 		}
 
 
@@ -25,6 +29,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 				var employee = await _employeeRepository.GetEmployeeByFirstNameAsync(request.FirstName);
 				if (employee != null)
 				{
+					_logger.LogInformation("Employee Record Already Exist");
 					return new BaseResponse<Guid>
 					{
 						Message = "Employee Record Already Exist",
@@ -33,6 +38,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 					};
 				}
 
+				_logger.LogInformation("Creating new Employee");
 				var newEmployee = new Employee()
 				{
 					Id = Guid.NewGuid(),
@@ -50,6 +56,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 				await _dbContext.Emlpoyees.AddAsync(newEmployee);
 				if (await _dbContext.SaveChangesAsync() > 0)
 				{
+					_logger.LogInformation("Employee records added successfully");
 					return new BaseResponse<Guid>
 					{
 						Message = "Employee added successfully",
@@ -57,6 +64,8 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 						Data = newEmployee.Id
 					};
 				}
+
+				_logger.LogError("Failed to add employee records");
 				return new BaseResponse<Guid>
 				{
 					Message = "Failed To Create Employee",
@@ -66,12 +75,13 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 			}
 			catch (Exception ex)
 			{
+				_logger.LogDebug($"An error occured {ex.Message}");
 				return new BaseResponse<Guid>
-					   {
-						   Message = $"Error: {ex.Message}",
-						   IsSuccessful = false,
-						   Data = Guid.Empty
-					   };
+				{
+					Message = $"Error: {ex.Message}",
+					IsSuccessful = false,
+					Data = Guid.Empty
+				};
 			}
 		}
 
@@ -124,9 +134,11 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 		{
 			try
 			{
+				_logger.LogInformation("Get employee method called");
 				var employee = await _employeeRepository.GetEmployeeAsync(id);
 				if (employee != null)
 				{
+					_logger.LogInformation("Retrieving employee records");
 					var data = new EmployeeDto
 					{
 						employeeId = employee.Id,
@@ -140,6 +152,8 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 						HomeAddress = employee.HomeAddress,
 						MaritalStatus = employee.MaritalStatus,
 					};
+
+					_logger.LogInformation("Recovered employee records successfully");
 					return new BaseResponse<EmployeeDto>
 					{
 						Message = "Record Retrieved Successfully",
@@ -148,6 +162,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 					};
 				}
 
+				_logger.LogDebug("Failed to retrieve employee records");
 				return new BaseResponse<EmployeeDto>
 				{
 					Message = "No Record Found",
@@ -157,6 +172,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 			}
 			catch (Exception ex)
 			{
+				_logger.LogError($"{ex.Message}");
 				return new BaseResponse<EmployeeDto>
 				{
 					Message = $"Error: {ex.Message}",
@@ -170,33 +186,37 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
         {
             try
             {
+				_logger.LogInformation("Get Company By EmployeeId method called");
                 var employee = await _employeeRepository.GetCompanyByEmployeeIdAsync(employeeId);
 
                 if (employee != null)
                 {
+					_logger.LogInformation("Retrieved Company ID successfully");
                     return new BaseResponse<Guid>
-                    {
-                        Message = "Company ID Retrieved Successfully",
-                        IsSuccessful = true,
-                        Data = employee.CompanyId 
-                    };
+					{
+						Message = "Company ID Retrieved Successfully",
+						IsSuccessful = true,
+						Data = employee.CompanyId
+					};
                 }
 
+				_logger.LogInformation("Company Id Cannot be found");
                 return new BaseResponse<Guid>
-                {
-                    Message = "No Record Found",
-                    IsSuccessful = false,
-                    Data = Guid.Empty 
-                };
+				{
+					Message = "No Record Found",
+					IsSuccessful = false,
+					Data = Guid.Empty
+				};
             }
             catch (Exception ex)
             {
+				_logger.LogError($"{ex.Message}");
                 return new BaseResponse<Guid>
-                {
-                    Message = $"Error: {ex.Message}",
-                    IsSuccessful = false,
-                    Data = Guid.Empty 
-                };
+				{
+					Message = $"Error: {ex.Message}",
+					IsSuccessful = false,
+					Data = Guid.Empty
+				};
             }
         }
 
@@ -205,10 +225,12 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
         {
             try
             {
+				_logger.LogInformation("Get all Employees by Company ID method called");
                 var employees = await _employeeRepository.GetEmployeesByCompanyIdAsync(companyId);
 
                 if (employees != null && employees.Count > 0)
                 {
+					_logger.LogInformation("Retrieving all employee records for {companyId}",companyId);
                     var employeeDtos = employees.Select(e => new EmployeeDto
                     {
                         employeeId = e.Id,
@@ -223,29 +245,32 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
                         MaritalStatus = e.MaritalStatus
                     }).ToList();
 
+					_logger.LogInformation("Employees record for {companyId} retrieved successfully", companyId);
                     return new BaseResponse<List<EmployeeDto>>
-                    {
-                        Message = "Employees retrieved successfully",
-                        IsSuccessful = true,
-                        Data = employeeDtos
-                    };
+					{
+						Message = "Employees retrieved successfully",
+						IsSuccessful = true,
+						Data = employeeDtos
+					};
                 }
 
+				_logger.LogInformation("Can't find any employee for {companyId}", companyId);
                 return new BaseResponse<List<EmployeeDto>>
-                {
-                    Message = "No employees found for this company.",
-                    IsSuccessful = false,
-                    Data = new List<EmployeeDto>()
-                };
+				{
+					Message = "No employees found for this company.",
+					IsSuccessful = false,
+					Data = new List<EmployeeDto>()
+				};
             }
             catch (Exception ex)
             {
+				_logger.LogError(ex, "An error occurred while processing the request.");
                 return new BaseResponse<List<EmployeeDto>>
 				{
-                    Message = $"Error: {ex.Message}",
-                    IsSuccessful = false,
-                    Data = new List<EmployeeDto>()
-                };
+					Message = $"Error: {ex.Message}",
+					IsSuccessful = false,
+					Data = new List<EmployeeDto>()
+				};
             }
         }
 
@@ -253,9 +278,12 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 		{
 			try
 			{
+				_logger.LogInformation("Update employee method called");
 				var employee = await _employeeRepository.GetEmployeeAsync(id);
+				
 				if (employee != null)
-				{	
+				{
+					_logger.LogInformation("Updating Employee Records");
 					employee.FirstName = request.FirstName;
 					employee.LastName = request.LastName;
 					employee.DOB = request.DOB;
@@ -269,28 +297,32 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 
 					if (await _dbContext.SaveChangesAsync() > 0)
 					{
-						return new BaseResponse<Guid> 
-						{ 
-							Message = "Employee Record updated successfully", 
-							IsSuccessful = true, 
-							Data = employee.Id 
+						_logger.LogInformation("Saving changes");
+						return new BaseResponse<Guid>
+						{
+							Message = "Employee Record updated successfully",
+							IsSuccessful = true,
+							Data = employee.Id
 						};
 					}
 				}
 
-				return new BaseResponse<Guid> 
-				{ Message = "Record not found", 
-					IsSuccessful = false, 
-					Data = Guid.Empty 
+				_logger.LogInformation("Failed to Update record for employee {id}", id);
+				return new BaseResponse<Guid>
+				{
+					Message = "Record not found",
+					IsSuccessful = false,
+					Data = Guid.Empty
 				};
 			}
 			catch (Exception ex)
 			{
-				return new BaseResponse<Guid> 
-				{ 
-					Message = $"Error :  {ex.Message}", 
-					IsSuccessful = false, 
-					Data = Guid.Empty 
+				_logger.LogError("An error occured");
+				return new BaseResponse<Guid>
+				{
+					Message = $"Error :  {ex.Message}",
+					IsSuccessful = false,
+					Data = Guid.Empty
 				};
 			}
 		}
@@ -299,6 +331,7 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 		{
 			try
 			{
+				_logger.LogInformation("Delete employee records method called");
 				var employee = await _employeeRepository.GetEmployeeAsync(id);
 
 				if (employee != null)
@@ -307,29 +340,32 @@ namespace EmployeeManagementLibrary.Services.EmployeeServices
 
 					if (await _dbContext.SaveChangesAsync() > 0)
 					{
-						return new BaseResponse<bool> 
-						{ 
-							Message = "Employee deleted successfully", 
-							IsSuccessful = true, 
-							Data = true 
+						_logger.LogInformation("Employee record deleted successfully");
+						return new BaseResponse<bool>
+						{
+							Message = "Employee deleted successfully",
+							IsSuccessful = true,
+							Data = true
 						};
 					}
 				}
 
-				return new BaseResponse<bool> 
-				{ 
-					Message = "Employee not found", 
-					IsSuccessful = false, 
-					Data = false 
+				_logger.LogInformation("Employee not found");
+				return new BaseResponse<bool>
+				{
+					Message = "Employee not found",
+					IsSuccessful = false,
+					Data = false
 				};
 			}
 			catch (Exception ex)
 			{
-
-				return new BaseResponse<bool> 
-				{ Message = $"Error :  {ex.Message}", 
-					IsSuccessful = false, 
-					Data = false 
+				_logger.LogError("An error occured while processing request");
+				return new BaseResponse<bool>
+				{
+					Message = $"Error :  {ex.Message}",
+					IsSuccessful = false,
+					Data = false
 				};
 			}
 		}
